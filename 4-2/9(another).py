@@ -9,7 +9,8 @@ Created on Thu Sep 27 15:01:42 2018
         其实就是将(Conv-BN-activation-MaxPool)这四层结构重复了三次,只是其中的超参数选取不同.
         
 特别注意:9(another).py与9.1(another).py主要是为了熟悉keras搭建函数式模型(Model)的步骤;
-        以及掌握训练过程与测试过程的可视化方法;
+        以及掌握训练过程与测试过程的可视化方法(其中9(another).py直接利用fit函数返回的History对象;
+        9.1(another).py则定义了继承了keras.callbacks.Callback类的新的回调函数);
         以及了解h5py文件存放数据集的格式.
 """
 
@@ -58,6 +59,7 @@ print ("Y_test shape: " + str(Y_test.shape))
 #2.利用keras构建模型
 from keras.models import Model
 from keras.layers import Input, ZeroPadding2D, Conv2D, BatchNormalization, Activation, MaxPooling2D, Flatten, Dense
+import matplotlib.pyplot as plt
 
 def happymodel(input_shape):
     x_input = Input(input_shape)
@@ -86,7 +88,19 @@ def happymodel(input_shape):
 
 model = happymodel(X_train.shape[1:])
 model.compile(optimizer='Adam',loss='binary_crossentropy',metrics=['accuracy'])
-model.fit(x=X_train,y=Y_train,batch_size=32,epochs=10)
+
+History = model.fit(x=X_train,y=Y_train,batch_size=32,epochs=10,validation_split=0.3)
+fig = plt.figure()
+plt.plot(History.history['acc'],'r',label='train acc')
+plt.plot(History.history['loss'],'g',label='train loss')
+plt.plot(History.history['val_acc'],'b',label='val acc')
+plt.plot(History.history['val_loss'],'k',label='val loss')
+plt.grid(True)
+plt.xlabel('epoch')
+plt.ylabel('acc-loss')
+plt.legend(loc='upper right')
+plt.show()
+
 preds = model.evaluate(x=X_test,y=Y_test)
 print("test loss = "+str(preds[0]))
 print("test accuracy = "+str(preds[1]))

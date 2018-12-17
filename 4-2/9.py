@@ -7,6 +7,7 @@ Created on Fri Aug  3 10:25:53 2018
 主要内容:keras教程
 主要问题:第五部分,keras的可视化工具安装有问题,包括(from Ipython.display import SVG
                                                 与from keras.utils import plot_model)
+        9.py对应的辅助函数在kt_utils.py中
 """
 
 ###############################################################################

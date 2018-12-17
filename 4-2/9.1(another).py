@@ -123,7 +123,7 @@ model = model(X_train.shape[1:])
 model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
 
 history = LossHistory()
-model.fit(x=X_train,y=Y_train,batch_size=32,epochs=50,
+model.fit(x=X_train,y=Y_train,batch_size=32,epochs=25,
           verbose=1,
           shuffle=True,
           validation_split=0.3,

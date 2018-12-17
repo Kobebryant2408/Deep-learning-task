@@ -5,6 +5,7 @@ Created on Tue Aug  7 09:53:52 2018
 @author: kobe24
 
 主要内容:利用keras写残差网络
+        9.1.py对应的辅助函数在resnets_utils.py中
 """
 
 ###############################################################################
@@ -148,7 +149,7 @@ print ("Y_test shape: " + str(Y_test.shape))
 #5 - 创建,编译,训练,测试模块
 model = ResNet50(input_shape=[64,64,3],classes=6)
 model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
-model.fit(X_train,Y_train,epochs=2,batch_size=32)
+model.fit(X_train,Y_train,epochs=20,batch_size=32)
 
 preds = model.evaluate(X_test, Y_test)
 print ("Loss = " + str(preds[0]))

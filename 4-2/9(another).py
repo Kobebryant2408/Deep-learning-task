@@ -59,8 +59,10 @@ print ("Y_test shape: " + str(Y_test.shape))
 #2.利用keras构建模型
 from keras.models import Model
 from keras.layers import Input, ZeroPadding2D, Conv2D, BatchNormalization, Activation, MaxPooling2D, Flatten, Dense
+from keras.callbacks import ReduceLROnPlateau
+from keras.optimizers import Adam
 import matplotlib.pyplot as plt
-
+#2.1 搭建模型
 def happymodel(input_shape):
     x_input = Input(input_shape)
     x = ZeroPadding2D((3,3))(x_input)
@@ -87,9 +89,19 @@ def happymodel(input_shape):
     return model
 
 model = happymodel(X_train.shape[1:])
-model.compile(optimizer='Adam',loss='binary_crossentropy',metrics=['accuracy'])
-
-History = model.fit(x=X_train,y=Y_train,batch_size=32,epochs=10,validation_split=0.3)
+#2.2 编译模型
+optimizer = Adam(lr=0.001)
+model.compile(optimizer=optimizer,loss='binary_crossentropy',
+              metrics=['accuracy'])
+#2.3 训练模型
+reduce_lr = ReduceLROnPlateau(monitor='val_acc',
+                              factor=0.5,
+                              patience=3,
+                              verbose=1,
+                              min_lr=0.00001)
+History = model.fit(x=X_train,y=Y_train,batch_size=64,epochs=20,
+                    validation_split=0.2,callbacks=[reduce_lr])
+#2.4 评估模型
 fig = plt.figure()
 plt.plot(History.history['acc'],'r',label='train acc')
 plt.plot(History.history['loss'],'g',label='train loss')
@@ -100,7 +112,7 @@ plt.xlabel('epoch')
 plt.ylabel('acc-loss')
 plt.legend(loc='upper right')
 plt.show()
-
+#2.5 测试模型
 preds = model.evaluate(x=X_test,y=Y_test)
 print("test loss = "+str(preds[0]))
 print("test accuracy = "+str(preds[1]))
